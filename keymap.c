@@ -27,40 +27,40 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /*
  * Base Layer: QWERTY
  *
- * ,--------------------------------------------.                              ,-------------------------------------------.
- * |  Tab    |   Q  |   W  |   E  |   R  |   T  |                              |   Y  |   U  |   I  |   O  |   P  |  | \   |
- * |---------+------+------+------+------+------|                              |------+------+------+------+------+--------|
- * |Ctrl/Bspc|   A  |   S  |  D   |   F  |   G  |                              |   H  |   J  |   K  |   L  | ;  : |  ' "   |
- * |---------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
- * | LShift  |   Z  |   X  |   C  |   V  |   B  |      | LGUI |  | RGUI |      |   N  |   M  | ,  < | . >  | /  ? | RShift |
- * `-----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
- *                         |      | Del  | LALT | Lower| Enter|  | Space| Raise| RAlt | RCTR |      |
+ * ,-------------------------------------------.                              ,-------------------------------------------.
+ * |  Tab   |   Q  |   W  |   E  |   R  |   T  |                              |   Y  |   U  |   I  |   O  |   P  |  Bspc  |
+ * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
+ * |Ctrl/Esc|   A  |   S  |   D  |   F  |   G  |                              |   H  |   J  |   K  |   L  | ;  : |  ' "   |
+ * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
+ * | LShift |   Z  |   X  |   C  |   V  |   B  | Del  | LGUI |  | RGUI | | \  |   N  |   M  | ,  < | . >  | /  ? | RShift |
+ * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
+ *                        |      | LCTR | LALT | Lower| Enter|  | Space| Raise| RAlt | RCTR |      |
  *                         `----------------------------------'  `----------------------------------'
  */
     [_QWERTY] = LAYOUT(
-      KC_TAB,                KC_Q, KC_W, KC_E,    KC_R,   KC_T,                                              KC_Y,    KC_U,     KC_I,    KC_O,    KC_P,    KC_BSLS,
-      MT(MOD_LCTL, KC_BSPC), KC_A, KC_S, KC_D,    KC_F,   KC_G,                                              KC_H,    KC_J,     KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-      KC_LSFT,               KC_Z, KC_X, KC_C,    KC_V,   KC_B,    XXXXXXX,    KC_LGUI, KC_RGUI, XXXXXXX,    KC_N,    KC_M,     KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
-                                         XXXXXXX, KC_DEL, KC_LALT, MO(_LOWER), KC_ENT,  KC_SPC,  MO(_RAISE), KC_RALT, KC_RCTRL, XXXXXXX
+      KC_TAB,               KC_Q, KC_W, KC_E,    KC_R,     KC_T,                                              KC_Y,    KC_U,     KC_I,    KC_O,    KC_P,    KC_BSPC,
+      MT(MOD_LCTL, KC_ESC), KC_A, KC_S, KC_D,    KC_F,     KC_G,                                              KC_H,    KC_J,     KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+      KC_LSFT,              KC_Z, KC_X, KC_C,    KC_V,     KC_B,    KC_DEL,     KC_LGUI, KC_RGUI, KC_BSLS,    KC_N,    KC_M,     KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
+                                        XXXXXXX, KC_LCTRL, KC_LALT, MO(_LOWER), KC_ENT,  KC_SPC,  MO(_RAISE), KC_RALT, KC_RCTRL, XXXXXXX
     ),
 /*
  * Base Layer: GAME
  *
  * ,-------------------------------------------.                              ,-------------------------------------------.
- * |  Tab   |   Q  |   W  |   E  |   R  |   T  |                              |   Y  |   U  |   I  |   O  |   P  |  | \   |
+ * |  Tab   |   Q  |   W  |   E  |   R  |   T  |                              |   Y  |   U  |   I  |   O  |   P  |  Bspc  |
  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
- * |Ctrl/Esc|   A  |   S  |  D   |   F  |   G  |                              |   H  |   J  |   K  |   L  | ;  : |  ' "   |
+ * |  Ctrl  |   A  |   S  |   D  |   F  |   G  |                              |   H  |   J  |   K  |   L  | ;  : |  ' "   |
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
- * | LShift |   Z  |   X  |   C  |   V  |   B  |      | LGUI |  | RGUI | Bspc |   N  |   M  | ,  < | . >  | /  ? | RShift |
+ * | LShift |   Z  |   X  |   C  |   V  |   B  | Esc  | LGUI |  | RGUI | | \  |   N  |   M  | ,  < | . >  | /  ? | RShift |
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
- *                        |      | LCTR | LALT | Lower| Space|  | Enter| Raise| RAlt | RCTR |      |
+ *                        |      | Del  | LALT | Lower| Space|  | Enter| Raise| RAlt | RCTR |      |
  *                        `----------------------------------'  `----------------------------------'
  */
     [_GAME] = LAYOUT(
-      KC_TAB,   KC_Q,  KC_W,   KC_E,    KC_R,     KC_T,                                                      KC_Y,    KC_U,     KC_I,    KC_O,    KC_P,    KC_BSLS,
-      KC_LCTRL, KC_A,  KC_S,   KC_D,    KC_F,     KC_G,                                                      KC_H,    KC_J,     KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-      KC_LSFT,  KC_Z,  KC_X,   KC_C,    KC_V,     KC_B,    XXXXXXX,    KC_LGUI, KC_RGUI, KC_BSPC,            KC_N,    KC_M,     KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
-                               XXXXXXX, KC_LCTRL, KC_LALT, MO(_LOWER), KC_SPC,  KC_ENT,  LT(_RAISE, KC_DEL), KC_RALT, KC_RCTRL, XXXXXXX
+      KC_TAB,   KC_Q,  KC_W,   KC_E,    KC_R,   KC_T,                                              KC_Y,    KC_U,     KC_I,    KC_O,    KC_P,    KC_BSPC,
+      KC_LCTRL, KC_A,  KC_S,   KC_D,    KC_F,   KC_G,                                              KC_H,    KC_J,     KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+      KC_LSFT,  KC_Z,  KC_X,   KC_C,    KC_V,   KC_B,    KC_ESC,     KC_LGUI, KC_RGUI, KC_BSLS,    KC_N,    KC_M,     KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
+                               XXXXXXX, KC_DEL, KC_LALT, MO(_LOWER), KC_SPC,  KC_ENT,  MO(_RAISE), KC_RALT, KC_RCTRL, XXXXXXX
     ),
 /*
  * Lower Layer: Symbols
@@ -76,7 +76,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                        `----------------------------------'  `----------------------------------'
  */
     [_LOWER] = LAYOUT(
-      KC_GRV,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                                        KC_6,    KC_7,    KC_8,    KC_9,    KC_0,     _______,
+      KC_GRV,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                                        KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_DEL,
       _______, _______, _______, KC_LBRC, KC_RBRC, KC_WH_U,                                     KC_PLUS, KC_LPRN, KC_RPRN, KC_EQL,  _______, _______,
       _______, _______, KC_BTN2, KC_BTN3, KC_BTN1, KC_WH_D, _______, _______, _______, _______, KC_UNDS, KC_MINS, _______, _______, _______, _______,
                                  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
@@ -85,17 +85,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * Raise Layer: Number keys, media, navigation
  *
  * ,-------------------------------------------.                              ,-------------------------------------------.
- * |        |   1  |  2   |  3   |  4   |  5   |                              |  6   |  7   |  8   |  9   |  0   |        |
+ * |        |  F1  |  F2  |  F3  |  F4  |      |                              |      |  Ins | Print| Pause|      |  Del   |
  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
- * |        |      | Prev | Play | Next | VolUp|                              | Left | Down | Up   | Right|      |        |
+ * |        |  F5  |  F6  |  F7  |  F8  | Caps |                              | Left | Down | Up   | Right|      |        |
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
- * |        |      |      |      | Mute | VolDn|      |      |  |      |      | MLeft| Mdown| MUp  |MRight|      |        |
+ * |        |  F9  |  F10 |  F11 |  F12 |      |      |      |  |      |      | Home | PgUp | PgDn | End  |      |        |
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
  *                        |      |      |      |      |      |  |      |      |      |      |      |
  *                        `----------------------------------'  `----------------------------------'
  */
     [_RAISE] = LAYOUT(
-      _______, KC_F1, KC_F2,  KC_F3,  KC_F4,  _______,                                     _______, KC_INS,  KC_PSCR, KC_PAUS, _______, _______,
+      _______, KC_F1, KC_F2,  KC_F3,  KC_F4,  _______,                                     _______, KC_INS,  KC_PSCR, KC_PAUS, _______, KC_DEL,
       _______, KC_F5, KC_F6,  KC_F7,  KC_F8,  KC_CAPS,                                     KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, _______, _______,
       _______, KC_F9, KC_F10, KC_F11, KC_F12, _______, _______, _______, _______, _______, KC_HOME, KC_PGUP, KC_PGDN, KC_END,  _______, _______,
                                  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
@@ -104,11 +104,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * Debug Layer: Function keys, RGB
  *
  * ,-------------------------------------------.                              ,-------------------------------------------.
- * |        | F1   |  F2  | F3   | F4   | F5   |                              | F6   | F7   |  F8  | F9   | F10  |        |
+ * |        |      |LClick| Up   |RClick|      |                              |      |      |      |      |      |        |
  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
- * |        | TOG  | SAI  | HUI  | VAI  | MOD  |                              |      |      |      | F11  | F12  |        |
+ * |        |      | Left | Down | Right|WheelU|                              |      | VolD | Mute | VolU |      |        |
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
- * |        |      | SAD  | HUD  | VAD  | RMOD |      |      |  |      |      |      |      |      |      |      |        |
+ * |        |      |WheelL|      |WheelR|WheelD|      |      |  |      |      |      | Prev | Play | Next |      |        |
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
  *                        |      |      |      |      |      |  |      |      |      |      |      |
  *                        `----------------------------------'  `----------------------------------'
