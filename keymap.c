@@ -332,3 +332,7 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
     return true;
 }
 #endif
+
+void suspend_power_down_user(void) {
+    oled_off();
+}
