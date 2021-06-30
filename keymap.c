@@ -276,6 +276,7 @@ static void render_status(void) {
 
     // QMK Logo and version information
     render_qmk_logo();
+    oled_write_P(PSTR("\n"), false);
     oled_write_P(PSTR("Kyria rev1.0\n\n"), false);
 
     // Host Keyboard Layer Status
