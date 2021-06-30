@@ -20,6 +20,7 @@ enum layers {
     _GAME,
     _LOWER,
     _RAISE,
+    _MAGIC,
     _DEBUG
 };
 
@@ -85,7 +86,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * Raise Layer: Number keys, media, navigation
  *
  * ,-------------------------------------------.                              ,-------------------------------------------.
- * |        |  F1  |  F2  |  F3  |  F4  |      |                              |      |  Ins | Print| Pause|      |  Del   |
+ * |        |  F1  |  F2  |  F3  |  F4  |      |                              |      |      |  Ins | Print| Pause|  Del   |
  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
  * |        |  F5  |  F6  |  F7  |  F8  | Caps |                              | Left | Down | Up   | Right|      |        |
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
@@ -95,10 +96,29 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                        `----------------------------------'  `----------------------------------'
  */
     [_RAISE] = LAYOUT(
-      _______, KC_F1, KC_F2,  KC_F3,  KC_F4,  _______,                                     _______, KC_INS,  KC_PSCR, KC_PAUS, _______, KC_DEL,
-      _______, KC_F5, KC_F6,  KC_F7,  KC_F8,  KC_CAPS,                                     KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, _______, _______,
-      _______, KC_F9, KC_F10, KC_F11, KC_F12, _______, _______, _______, _______, _______, KC_HOME, KC_PGUP, KC_PGDN, KC_END,  _______, _______,
+      _______, KC_F1, KC_F2,  KC_F3,  KC_F4,  _______,                                     _______, _______, KC_INS,  MO(_MAGIC), KC_PAUS, KC_DEL,
+      _______, KC_F5, KC_F6,  KC_F7,  KC_F8,  KC_CAPS,                                     KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT,    _______, _______,
+      _______, KC_F9, KC_F10, KC_F11, KC_F12, _______, _______, _______, _______, _______, KC_HOME, KC_PGUP, KC_PGDN, KC_END,     _______, _______,
                                  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
+    ),
+/*
+ * Magic SysRq layer
+ *
+ * ,-------------------------------------------.                              ,-------------------------------------------.
+ * |        |      |      |   E  |   R  |      |                              |      |   U  |   I  |      | Print|        |
+ * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
+ * |        |      |   S  |      |      |      |                              |      |      |      |      |      |        |
+ * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
+ * |        |      |      |      |      |   B  |      |      |  |      |      |      |      |      |      |      |        |
+ * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
+ *                        |      |      |      |      |      |  |      |      |      |      |      |
+ *                        `----------------------------------'  `----------------------------------'
+ */
+    [_MAGIC] = LAYOUT(
+      XXXXXXX, XXXXXXX, XXXXXXX, KC_E,    KC_R,    XXXXXXX,                                     XXXXXXX, KC_U,    KC_I,    XXXXXXX, KC_PSCR, XXXXXXX,
+      XXXXXXX, XXXXXXX, KC_S,    XXXXXXX, XXXXXXX, XXXXXXX,                                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_B,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+                                 XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX
     ),
 /*
  * Debug Layer: Function keys, RGB
@@ -188,6 +208,9 @@ static void render_status(void) {
             break;
         case _RAISE:
             oled_write_P(PSTR("Raise\n"), false);
+            break;
+        case _MAGIC:
+            oled_write_P(PSTR("SysRq\n"), false);
             break;
         case _DEBUG:
             oled_write_P(PSTR("Debug\n"), false);
