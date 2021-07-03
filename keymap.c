@@ -134,10 +134,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                        `----------------------------------'  `----------------------------------'
  */
     [_DEBUG] = LAYOUT(
-      XXXXXXX, XXXXXXX, KC_BTN1, KC_MS_U, KC_BTN2, XXXXXXX,                                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-      XXXXXXX, XXXXXXX, KC_MS_L, KC_MS_D, KC_MS_R, KC_WH_U,                                     XXXXXXX, KC_VOLD, KC_MUTE, KC_VOLU, XXXXXXX, XXXXXXX,
-      KC_ACL2, XXXXXXX, KC_WH_L, XXXXXXX, KC_WH_R, KC_WH_D, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_MPRV, KC_MPLY, KC_MNXT, XXXXXXX, KC_ACL0,
-                                 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
+      XXXXXXX, XXXXXXX, KC_BTN1, KC_MS_U, KC_BTN2, XXXXXXX,                                 DF(_QWERTY), DF(_GAME), XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+      XXXXXXX, XXXXXXX, KC_MS_L, KC_MS_D, KC_MS_R, KC_WH_U,                                     XXXXXXX, KC_VOLD,   KC_MUTE, KC_VOLU, XXXXXXX, XXXXXXX,
+      KC_ACL2, XXXXXXX, KC_WH_L, XXXXXXX, KC_WH_R, KC_WH_D, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_MPRV,   KC_MPLY, KC_MNXT, XXXXXXX, KC_ACL0,
+                                 _______, _______, _______, _______, _______, _______, _______, _______, _______,   _______
     ),
 // /*
 //  * Layer template
