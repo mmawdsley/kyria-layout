@@ -80,7 +80,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       KC_GRV,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                                        KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_DEL,
       _______, _______, _______, KC_LBRC, KC_RBRC, KC_WH_U,                                     KC_PLUS, KC_LPRN, KC_RPRN, KC_EQL,  _______, _______,
       _______, _______, KC_BTN2, KC_BTN3, KC_BTN1, KC_WH_D, _______, _______, _______, _______, KC_UNDS, KC_MINS, _______, _______, _______, _______,
-                                 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
+                                 _______, _______, _______, _______, _______, _______, MO(_DEBUG), _______, _______, _______
     ),
 /*
  * Raise Layer: Number keys, media, navigation
@@ -99,7 +99,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       _______, KC_F1, KC_F2,  KC_F3,  KC_F4,  _______,                                     _______, _______, KC_INS,  MO(_MAGIC), KC_PAUS, KC_DEL,
       _______, KC_F5, KC_F6,  KC_F7,  KC_F8,  KC_CAPS,                                     KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT,    _______, _______,
       _______, KC_F9, KC_F10, KC_F11, KC_F12, _______, _______, _______, _______, _______, KC_HOME, KC_PGUP, KC_PGDN, KC_END,     _______, _______,
-                                 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
+                            _______, _______, _______, MO(_DEBUG), _______, _______, _______, _______, _______, _______
     ),
 /*
  * Magic SysRq layer
@@ -159,10 +159,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //                                  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
 //     ),
 };
-
-layer_state_t layer_state_set_user(layer_state_t state) {
-    return update_tri_layer_state(state, _LOWER, _RAISE, _DEBUG);
-}
 
 #ifdef OLED_DRIVER_ENABLE
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
