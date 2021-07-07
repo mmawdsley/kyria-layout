@@ -8,8 +8,8 @@ import json
 import sys
 
 KEY_WIDTH = 50
-NUM_COLS = 12
-NUM_ROWS = 5
+NUM_COLS = 16
+NUM_ROWS = 4
 KEYBOARD_GUTTER = 10
 TITLE_GUTTER = 30
 IMAGE_PADDING = 10
@@ -17,6 +17,8 @@ KEY_GUTTER = 5
 BOTTOM_OFFSET = 30
 BOTTOM_GAP = 100
 GAP = 100
+BIG_GAP = GAP + 4 * (KEY_WIDTH + KEY_GUTTER)
+ROW_INDENT = (KEY_WIDTH + KEY_GUTTER) * 3
 TTF_FONT_PATH = '/usr/share/fonts/truetype/ttf-bitstream-vera/Vera.ttf'
 FONT_SIZE = 10
 
@@ -69,7 +71,7 @@ for keycode in IMAGE_KEY_MAP:
 draw = ImageDraw.Draw(layout_image)
 font = ImageFont.truetype(TTF_FONT_PATH, FONT_SIZE)
 
-layout_map = 'ooooo ooooonooooo ooooonooooo ooooonooooo ssoooooBoooo_ooooooo'
+layout_map = 'ooooo	ooooonooooo	ooooonooooooo oooooooNoooo oooooo'
 
 def draw_key(x, y, keycode):
     layout_image.paste(key_image, (x, y))
@@ -113,11 +115,8 @@ for layer_idx in range(0, len(keyboard['layers'])):
     key_idx = 0
 
     for text in layer:
-        try:
-            action = layout_map[key_idx]
-            key_idx += 1
-        except IndexError:
-            key_idx = 0
+        action = layout_map[key_idx]
+        key_idx += 1
 
         if action == 's':
             continue
@@ -128,11 +127,16 @@ for layer_idx in range(0, len(keyboard['layers'])):
             x += KEY_WIDTH + KEY_GUTTER
         elif action == ' ':
             x += KEY_WIDTH + GAP
+        elif action == '	':
+            x += KEY_WIDTH + BIG_GAP
         elif action == '_':
             x += BOTTOM_GAP
-        elif action == 'n':
+        elif action == 'n' or action == 'N':
             x = IMAGE_PADDING
             y += KEY_WIDTH + KEY_GUTTER
+
+            if action == 'N':
+                x += ROW_INDENT
         elif action == 'B':
             x = IMAGE_PADDING + KEY_WIDTH + BOTTOM_OFFSET
             y += KEY_WIDTH + KEY_GUTTER

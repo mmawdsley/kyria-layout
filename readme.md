@@ -1,3 +1,5 @@
+# Custom Kyria keyboard layout
+
 ![Kyria](kyria.png)
 
-# Custom Kyria keyboard layout
+![Kyria](layout.png)
