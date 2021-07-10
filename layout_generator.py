@@ -46,6 +46,15 @@ OFFSETS = {
 MAX_OFFSET = OFFSETS[max(OFFSETS, key=OFFSETS.get)] * -1
 MIN_OFFSET = OFFSETS[min(OFFSETS, key=OFFSETS.get)] * -1
 
+LAYER_TITLES = {
+    0: 'Base',
+    1: 'Game',
+    2: 'Lower',
+    3: 'Raise',
+    4: 'Magic',
+    5: 'Debug'
+}
+
 IMAGE_KEY_MAP = {
     'KC_TRNS': {
         'filename': 'transparent.png'
@@ -137,7 +146,7 @@ for layer_idx in range(0, len(keyboard['layers'])):
     if layer_idx in skip_layers:
         continue
 
-    text = 'Layer %d' % layer_count
+    text = LAYER_TITLES[layer_idx]
     layer = keyboard['layers'][layer_idx]
 
     text_width, text_height = draw.textsize(text)
