@@ -11,16 +11,40 @@ KEY_WIDTH = 50
 NUM_COLS = 16
 NUM_ROWS = 4
 KEYBOARD_GUTTER = 10
-TITLE_GUTTER = 30
+TITLE_GUTTER = 80
 IMAGE_PADDING = 10
 KEY_GUTTER = 5
 BOTTOM_OFFSET = 30
-BOTTOM_GAP = 100
 GAP = 100
 BIG_GAP = GAP + 4 * (KEY_WIDTH + KEY_GUTTER)
-ROW_INDENT = (KEY_WIDTH + KEY_GUTTER) * 3
+ROW_INDENT = round((KEY_WIDTH + KEY_GUTTER) * 2.4)
+ROW_OFFSET = KEY_WIDTH + KEY_GUTTER
+BOTTOM_GAP = 216
 TTF_FONT_PATH = '/usr/share/fonts/truetype/ttf-bitstream-vera/Vera.ttf'
 FONT_SIZE = 10
+
+A_KEY = 'o'
+A_GAP = ' '
+A_BIG_GAP = '	'
+A_BOTTOM_GAP = '_'
+A_END = 'n'
+A_ROW = 'r'
+A_OFFSET_1 = 1
+A_OFFSET_2 = 2
+A_OFFSET_3 = 3
+A_OFFSET_4 = 4
+A_OFFSET_5 = 5
+
+OFFSETS = {
+    1: -round(ROW_OFFSET * 0.636),
+    2: -round(ROW_OFFSET * 0.986),
+    3: -round(ROW_OFFSET * 0.636),
+    4: -round(ROW_OFFSET * 0.60),
+    5: -round(ROW_OFFSET * 0.350)
+}
+
+MAX_OFFSET = OFFSETS[max(OFFSETS, key=OFFSETS.get)] * -1
+MIN_OFFSET = OFFSETS[min(OFFSETS, key=OFFSETS.get)] * -1
 
 IMAGE_KEY_MAP = {
     'KC_TRNS': {
@@ -60,7 +84,11 @@ if args.with_base_layers:
             skip_layers.append(layer_idx)
 
 image_width = keyboard_width + IMAGE_PADDING * 2 + GAP
-image_height = keyboard_height * layer_count + (layer_count - 1) * KEYBOARD_GUTTER + (layer_count - 1) * KEY_GUTTER + IMAGE_PADDING * 2 + layer_count * TITLE_GUTTER
+image_height = keyboard_height * layer_count \
+    + (layer_count - 1) * KEYBOARD_GUTTER \
+    + IMAGE_PADDING * 2 \
+    + layer_count * TITLE_GUTTER \
+    + MIN_OFFSET - MAX_OFFSET
 
 layout_image = Image.new('RGB', (image_width, image_height), color = 'white')
 key_image = Image.open('key.png')
@@ -71,7 +99,12 @@ for keycode in IMAGE_KEY_MAP:
 draw = ImageDraw.Draw(layout_image)
 font = ImageFont.truetype(TTF_FONT_PATH, FONT_SIZE)
 
-layout_map = 'ooooo	ooooonooooo	ooooonooooooo oooooooNoooo oooooo'
+layout_map = [
+    [A_KEY], [A_KEY, A_OFFSET_1], [A_KEY, A_OFFSET_2], [A_KEY, A_OFFSET_3], [A_KEY, A_OFFSET_4], [A_BIG_GAP, A_OFFSET_4], [A_KEY, A_OFFSET_3], [A_KEY, A_OFFSET_2], [A_KEY, A_OFFSET_1], [A_KEY], [A_KEY], [A_END],
+    [A_KEY], [A_KEY, A_OFFSET_1], [A_KEY, A_OFFSET_2], [A_KEY, A_OFFSET_3], [A_KEY, A_OFFSET_4], [A_BIG_GAP, A_OFFSET_4], [A_KEY, A_OFFSET_3], [A_KEY, A_OFFSET_2], [A_KEY, A_OFFSET_1], [A_KEY], [A_KEY], [A_END],
+    [A_KEY], [A_KEY, A_OFFSET_1], [A_KEY, A_OFFSET_2], [A_KEY, A_OFFSET_3], [A_KEY, A_OFFSET_4], [A_KEY], [A_KEY], [A_GAP], [A_KEY], [A_KEY, A_OFFSET_4], [A_KEY, A_OFFSET_3], [A_KEY, A_OFFSET_2], [A_KEY, A_OFFSET_1], [A_KEY], [A_KEY], [A_END, A_ROW, A_OFFSET_3],
+    [A_KEY, A_OFFSET_3], [A_KEY, A_OFFSET_5], [A_KEY], [A_KEY], [A_BOTTOM_GAP], [A_KEY], [A_KEY, A_OFFSET_5], [A_KEY, A_OFFSET_3], [A_KEY, A_OFFSET_3], [A_KEY], [A_KEY]
+]
 
 def draw_key(x, y, keycode):
     layout_image.paste(key_image, (x, y))
@@ -95,8 +128,9 @@ def draw_key(x, y, keycode):
         draw.text((text_x, text_y), text, fill=(0,0,0,128), font=font, align='center')
 
 x = IMAGE_PADDING
-y = IMAGE_PADDING
+y = IMAGE_PADDING + MAX_OFFSET
 
+offset = 0
 layer_count = 0
 
 for layer_idx in range(0, len(keyboard['layers'])):
@@ -115,31 +149,31 @@ for layer_idx in range(0, len(keyboard['layers'])):
     key_idx = 0
 
     for text in layer:
-        action = layout_map[key_idx]
+        actions = layout_map[key_idx]
         key_idx += 1
 
-        if action == 's':
-            continue
+        draw_key(x, y + offset, text)
 
-        draw_key(x, y, text)
+        offset = 0
 
-        if action == 'o':
-            x += KEY_WIDTH + KEY_GUTTER
-        elif action == ' ':
-            x += KEY_WIDTH + GAP
-        elif action == '	':
-            x += KEY_WIDTH + BIG_GAP
-        elif action == '_':
-            x += BOTTOM_GAP
-        elif action == 'n' or action == 'N':
-            x = IMAGE_PADDING
-            y += KEY_WIDTH + KEY_GUTTER
-
-            if action == 'N':
+        for action in actions:
+            if action == A_KEY:
+                x += KEY_WIDTH + KEY_GUTTER
+            elif action == A_GAP:
+                x += KEY_WIDTH + GAP
+            elif action == A_BIG_GAP:
+                x += KEY_WIDTH + BIG_GAP
+            elif action == A_BOTTOM_GAP:
+                x += BOTTOM_GAP
+            elif action == A_END:
+                x = IMAGE_PADDING
+                y += KEY_WIDTH + KEY_GUTTER
+                offset = 0
+            elif action == A_ROW:
                 x += ROW_INDENT
-        elif action == 'B':
-            x = IMAGE_PADDING + KEY_WIDTH + BOTTOM_OFFSET
-            y += KEY_WIDTH + KEY_GUTTER
+            elif action in [A_OFFSET_1, A_OFFSET_2, A_OFFSET_3, A_OFFSET_4, A_OFFSET_5]:
+                offset = OFFSETS[action]
+
 
     x = IMAGE_PADDING
     y += KEYBOARD_GUTTER + KEY_WIDTH + KEY_GUTTER
