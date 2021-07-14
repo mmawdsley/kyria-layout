@@ -3,189 +3,182 @@
 
 from PIL import Image, ImageDraw, ImageFont
 from keycodes import KEYCODES
+from layout_map import ACTIONS, LAYOUT_MAP
 from argparse import ArgumentParser
 import json
 import sys
 
-KEY_WIDTH = 50
-NUM_COLS = 16
-NUM_ROWS = 4
-KEYBOARD_GUTTER = 10
-TITLE_GUTTER = 80
-IMAGE_PADDING = 10
-KEY_GUTTER = 5
-BOTTOM_OFFSET = 30
-GAP = 100
-BIG_GAP = GAP + 4 * (KEY_WIDTH + KEY_GUTTER)
-ROW_INDENT = round((KEY_WIDTH + KEY_GUTTER) * 2.4)
-ROW_OFFSET = KEY_WIDTH + KEY_GUTTER
-BOTTOM_GAP = 216
-TTF_FONT_PATH = '/usr/share/fonts/truetype/ttf-bitstream-vera/Vera.ttf'
-FONT_SIZE = 10
+class Layout(object):
+    """Builds an image of the keyboard layout."""
 
-A_KEY = 'o'
-A_GAP = ' '
-A_BIG_GAP = '	'
-A_BOTTOM_GAP = '_'
-A_END = 'n'
-A_ROW = 'r'
-A_OFFSET_1 = 1
-A_OFFSET_2 = 2
-A_OFFSET_3 = 3
-A_OFFSET_4 = 4
-A_OFFSET_5 = 5
-
-OFFSETS = {
-    1: -round(ROW_OFFSET * 0.636),
-    2: -round(ROW_OFFSET * 0.986),
-    3: -round(ROW_OFFSET * 0.636),
-    4: -round(ROW_OFFSET * 0.60),
-    5: -round(ROW_OFFSET * 0.350)
-}
-
-MAX_OFFSET = OFFSETS[max(OFFSETS, key=OFFSETS.get)] * -1
-MIN_OFFSET = OFFSETS[min(OFFSETS, key=OFFSETS.get)] * -1
-
-LAYER_TITLES = {
-    0: 'Base',
-    1: 'Game',
-    2: 'Lower',
-    3: 'Raise',
-    4: 'Magic',
-    5: 'Debug'
-}
-
-IMAGE_KEY_MAP = {
-    'KC_TRNS': {
-        'filename': 'transparent.png'
-    },
-    'KC_NO': {
-        'filename': 'noop.png'
+    KEY_WIDTH = 50
+    NUM_COLS = 16
+    NUM_ROWS = 4
+    KEYBOARD_GUTTER = 10
+    TITLE_GUTTER = 80
+    IMAGE_PADDING = 10
+    KEY_GUTTER = 5
+    BOTTOM_OFFSET = 30
+    GAP = 100
+    BIG_GAP = GAP + 4 * (KEY_WIDTH + KEY_GUTTER)
+    ROW_INDENT = round((KEY_WIDTH + KEY_GUTTER) * 2.4)
+    ROW_OFFSET = KEY_WIDTH + KEY_GUTTER
+    BOTTOM_GAP = 216
+    TTF_FONT_PATH = '/usr/share/fonts/truetype/ttf-bitstream-vera/Vera.ttf'
+    FONT_SIZE = 10
+    OFFSETS = {
+        ACTIONS['OFFSET_1']: -round(ROW_OFFSET * 0.636),
+        ACTIONS['OFFSET_2']: -round(ROW_OFFSET * 0.986),
+        ACTIONS['OFFSET_3']: -round(ROW_OFFSET * 0.636),
+        ACTIONS['OFFSET_4']: -round(ROW_OFFSET * 0.60),
+        ACTIONS['OFFSET_5']: -round(ROW_OFFSET * 0.350)
     }
-}
+    MAX_OFFSET = OFFSETS[max(OFFSETS, key=OFFSETS.get)] * -1
+    MIN_OFFSET = OFFSETS[min(OFFSETS, key=OFFSETS.get)] * -1
+    LAYER_TITLES = {
+        0: 'Base',
+        1: 'Game',
+        2: 'Lower',
+        3: 'Raise',
+        4: 'Magic',
+        5: 'Debug'
+    }
+    KEYBOARD_WIDTH = KEY_WIDTH * NUM_COLS + (NUM_COLS - 1) * KEY_GUTTER
+    KEYBOARD_HEIGHT = KEY_WIDTH * NUM_ROWS + (NUM_ROWS - 1) * KEY_GUTTER
 
-parser = ArgumentParser()
-parser.add_argument("--with-base-layers", help="number of base layers", type=int)
-parser.add_argument("--base-layer", help="base layer ID", type=int)
+    def __init__(self):
+        self.image_key_map = {
+            'KC_TRNS': {
+                'filename': 'transparent.png'
+            },
+            'KC_NO': {
+                'filename': 'noop.png'
+            }
+        }
+        self.layout_image = None
+        self.key_image = Image.open('key.png')
+        self.draw = None
+        self.font = None
+        self.x = None
+        self.y = None
+        self.offset = None
 
-args = parser.parse_args()
+    def generate(self, with_base_layers, base_layer):
+        """Generate an image of the keyboard layout."""
 
-if args.with_base_layers and args.base_layer is None:
-    print("Base layer ID is required when managing base layers\n")
-    parser.print_help()
-    exit(1)
+        with open('keymap.json', 'r') as f:
+            keyboard = json.loads(f.read())
 
-keyboard_width = KEY_WIDTH * NUM_COLS + (NUM_COLS - 1) * KEY_GUTTER
-keyboard_height = KEY_WIDTH * NUM_ROWS + (NUM_ROWS - 1) * KEY_GUTTER
+        layers = keyboard['layers']
+        layer_count = len(layers)
+        skip_layers = []
 
-with open('keymap.json', 'r') as f:
-    keyboard = json.loads(f.read())
+        if with_base_layers:
+            layer_count = layer_count - with_base_layers + 1
 
-layers = keyboard['layers']
-layer_count = len(layers)
-skip_layers = []
+            for layer_idx in range(0, with_base_layers):
+                if layer_idx != base_layer:
+                    skip_layers.append(layer_idx)
 
-if args.with_base_layers:
-    layer_count = layer_count - args.with_base_layers + 1
+        image_width = Layout.KEYBOARD_WIDTH + Layout.IMAGE_PADDING * 2 + Layout.GAP
+        image_height = Layout.KEYBOARD_HEIGHT * layer_count \
+            + (layer_count - 1) * Layout.KEYBOARD_GUTTER \
+            + Layout.IMAGE_PADDING * 2 \
+            + layer_count * Layout.TITLE_GUTTER \
+            + Layout.MIN_OFFSET - Layout.MAX_OFFSET
 
-    for layer_idx in range(0, args.with_base_layers):
-        if layer_idx != args.base_layer:
-            skip_layers.append(layer_idx)
+        self.layout_image = Image.new('RGB', (image_width, image_height), color = 'white')
 
-image_width = keyboard_width + IMAGE_PADDING * 2 + GAP
-image_height = keyboard_height * layer_count \
-    + (layer_count - 1) * KEYBOARD_GUTTER \
-    + IMAGE_PADDING * 2 \
-    + layer_count * TITLE_GUTTER \
-    + MIN_OFFSET - MAX_OFFSET
+        for keycode in self.image_key_map:
+            self.image_key_map[keycode]['image'] = Image.open(self.image_key_map[keycode]['filename'])
 
-layout_image = Image.new('RGB', (image_width, image_height), color = 'white')
-key_image = Image.open('key.png')
+        self.draw = ImageDraw.Draw(self.layout_image)
+        self.font = ImageFont.truetype(Layout.TTF_FONT_PATH, Layout.FONT_SIZE)
 
-for keycode in IMAGE_KEY_MAP:
-    IMAGE_KEY_MAP[keycode]['image'] = Image.open(IMAGE_KEY_MAP[keycode]['filename'])
+        self.x = Layout.IMAGE_PADDING
+        self.y = Layout.IMAGE_PADDING + Layout.MAX_OFFSET
+        self.offset = 0
 
-draw = ImageDraw.Draw(layout_image)
-font = ImageFont.truetype(TTF_FONT_PATH, FONT_SIZE)
+        for layer_idx in list(i for i in range(0, len(keyboard['layers'])) if i not in skip_layers):
+            text = Layout.LAYER_TITLES[layer_idx]
+            layer = keyboard['layers'][layer_idx]
 
-layout_map = [
-    [A_KEY], [A_KEY, A_OFFSET_1], [A_KEY, A_OFFSET_2], [A_KEY, A_OFFSET_3], [A_KEY, A_OFFSET_4], [A_BIG_GAP, A_OFFSET_4], [A_KEY, A_OFFSET_3], [A_KEY, A_OFFSET_2], [A_KEY, A_OFFSET_1], [A_KEY], [A_KEY], [A_END],
-    [A_KEY], [A_KEY, A_OFFSET_1], [A_KEY, A_OFFSET_2], [A_KEY, A_OFFSET_3], [A_KEY, A_OFFSET_4], [A_BIG_GAP, A_OFFSET_4], [A_KEY, A_OFFSET_3], [A_KEY, A_OFFSET_2], [A_KEY, A_OFFSET_1], [A_KEY], [A_KEY], [A_END],
-    [A_KEY], [A_KEY, A_OFFSET_1], [A_KEY, A_OFFSET_2], [A_KEY, A_OFFSET_3], [A_KEY, A_OFFSET_4], [A_KEY], [A_KEY], [A_GAP], [A_KEY], [A_KEY, A_OFFSET_4], [A_KEY, A_OFFSET_3], [A_KEY, A_OFFSET_2], [A_KEY, A_OFFSET_1], [A_KEY], [A_KEY], [A_END, A_ROW, A_OFFSET_3],
-    [A_KEY, A_OFFSET_3], [A_KEY, A_OFFSET_5], [A_KEY], [A_KEY], [A_BOTTOM_GAP], [A_KEY], [A_KEY, A_OFFSET_5], [A_KEY, A_OFFSET_3], [A_KEY, A_OFFSET_3], [A_KEY], [A_KEY]
-]
+            text_width, text_height = self.draw.textsize(text)
+            text_x = image_width / 2 - text_width / 2
 
-def draw_key(x, y, keycode):
-    layout_image.paste(key_image, (x, y))
+            self.draw.text((text_x, self.y), text, fill=(0,0,0,128), font=self.font, align='center')
+            self.y += Layout.TITLE_GUTTER
 
-    try:
-        text_width, text_height = IMAGE_KEY_MAP[keycode]['image'].size
-        text_x = int(x + KEY_WIDTH / 2 - text_width / 2)
-        text_y = int(y + KEY_WIDTH / 2 - text_height / 2)
+            key_idx = 0
 
-        layout_image.paste(IMAGE_KEY_MAP[keycode]['image'], (text_x, text_y))
-    except KeyError:
+            for text in layer:
+                actions = LAYOUT_MAP[key_idx]
+                key_idx += 1
+
+                self._draw_key(self.x, self.y + self.offset, text)
+                self._process_actions(actions)
+
+            self.x = Layout.IMAGE_PADDING
+            self.y += Layout.KEYBOARD_GUTTER + Layout.KEY_WIDTH + Layout.KEY_GUTTER
+
+        self.layout_image.save('layout.png')
+
+    def _process_actions(self, actions):
+        """Modify the x, y, and offset variables based on the actions."""
+
+        self.offset = 0
+
+        if actions & ACTIONS['KEY']:
+            self.x += Layout.KEY_WIDTH + Layout.KEY_GUTTER
+        if actions & ACTIONS['GAP']:
+            self.x += Layout.KEY_WIDTH + Layout.GAP
+        if actions & ACTIONS['BIG_GAP']:
+            self.x += Layout.KEY_WIDTH + Layout.BIG_GAP
+        if actions & ACTIONS['BOTTOM_GAP']:
+            self.x += Layout.BOTTOM_GAP
+        if actions & ACTIONS['END']:
+            self.x = Layout.IMAGE_PADDING
+            self.y += Layout.KEY_WIDTH + Layout.KEY_GUTTER
+        if actions & ACTIONS['ROW']:
+            self.x += Layout.ROW_INDENT
+
+        for offset in Layout.OFFSETS:
+            if actions & offset:
+                self.offset = Layout.OFFSETS[offset]
+
+    def _draw_key(self, x, y, keycode):
+        """Draw the keyboard at the given coordinates."""
+
+        self.layout_image.paste(self.key_image, (x, y))
+
         try:
-            text = KEYCODES[keycode]
+            text_width, text_height = self.image_key_map[keycode]['image'].size
+            text_x = int(x + Layout.KEY_WIDTH / 2 - text_width / 2)
+            text_y = int(y + Layout.KEY_WIDTH / 2 - text_height / 2)
+
+            self.layout_image.paste(self.image_key_map[keycode]['image'], (text_x, text_y))
         except KeyError:
-            text = keycode
+            try:
+                text = KEYCODES[keycode]
+            except KeyError:
+                text = keycode
 
-        text_width, text_height = draw.textsize(text)
-        text_x = x + KEY_WIDTH / 2 - text_width / 2
-        text_y = y + KEY_WIDTH / 2 - text_height / 2
+            text_width, text_height = self.draw.textsize(text)
+            text_x = x + Layout.KEY_WIDTH / 2 - text_width / 2
+            text_y = y + Layout.KEY_WIDTH / 2 - text_height / 2
 
-        draw.text((text_x, text_y), text, fill=(0,0,0,128), font=font, align='center')
+            self.draw.text((text_x, text_y), text, fill=(0,0,0,128), font=self.font, align='center')
 
-x = IMAGE_PADDING
-y = IMAGE_PADDING + MAX_OFFSET
+if __name__ == "__main__":
+    parser = ArgumentParser()
+    parser.add_argument('--with-base-layers', help='number of base layers', type=int)
+    parser.add_argument('--base-layer', help='base layer ID', type=int)
 
-offset = 0
-layer_count = 0
+    args = parser.parse_args()
 
-for layer_idx in range(0, len(keyboard['layers'])):
-    if layer_idx in skip_layers:
-        continue
+    if args.with_base_layers and args.base_layer is None:
+        print("Base layer ID is required when managing base layers\n")
+        parser.print_help()
+        sys.exit(1)
 
-    text = LAYER_TITLES[layer_idx]
-    layer = keyboard['layers'][layer_idx]
-
-    text_width, text_height = draw.textsize(text)
-    text_x = image_width / 2 - text_width / 2
-
-    draw.text((text_x, y), text, fill=(0,0,0,128), font=font, align='center')
-
-    y += TITLE_GUTTER
-    key_idx = 0
-
-    for text in layer:
-        actions = layout_map[key_idx]
-        key_idx += 1
-
-        draw_key(x, y + offset, text)
-
-        offset = 0
-
-        for action in actions:
-            if action == A_KEY:
-                x += KEY_WIDTH + KEY_GUTTER
-            elif action == A_GAP:
-                x += KEY_WIDTH + GAP
-            elif action == A_BIG_GAP:
-                x += KEY_WIDTH + BIG_GAP
-            elif action == A_BOTTOM_GAP:
-                x += BOTTOM_GAP
-            elif action == A_END:
-                x = IMAGE_PADDING
-                y += KEY_WIDTH + KEY_GUTTER
-                offset = 0
-            elif action == A_ROW:
-                x += ROW_INDENT
-            elif action in [A_OFFSET_1, A_OFFSET_2, A_OFFSET_3, A_OFFSET_4, A_OFFSET_5]:
-                offset = OFFSETS[action]
-
-
-    x = IMAGE_PADDING
-    y += KEYBOARD_GUTTER + KEY_WIDTH + KEY_GUTTER
-    layer_count += 1
-
-layout_image.save('layout.png')
+    Layout().generate(args.with_base_layers, args.base_layer)
