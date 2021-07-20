@@ -374,11 +374,23 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
         }
     }
     else if (index == 1) {
-        // Page up/Page down
-        if (clockwise) {
-            tap_code16(LGUI(KC_PGDN));
-        } else {
-            tap_code16(LGUI(KC_PGUP));
+        switch(biton32(layer_state)){
+        case _LOWER:
+            // Scroll up/down
+            if (clockwise) {
+                tap_code(KC_WH_D);
+            } else {
+                tap_code(KC_WH_U);
+            }
+            break;
+        default:
+            // Page up/Page down
+            if (clockwise) {
+                tap_code16(LGUI(KC_PGDN));
+            } else {
+                tap_code16(LGUI(KC_PGUP));
+            }
+            break;
         }
     }
     return true;
