@@ -170,14 +170,10 @@ bool is_num_lock_held = false;
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case KC_HNUM:
-            if (record->event.pressed && !is_num_lock_held) {
+            if ((record->event.pressed && !is_num_lock_held)
+                || (!record->event.pressed && is_num_lock_held)
+            ) {
                 tap_code(KC_NLCK);
-                is_num_lock_held = true;
-            }
-
-            if (!record->event.pressed && is_num_lock_held) {
-                tap_code(KC_NLCK);
-                is_num_lock_held = false;
             }
 
             break;
@@ -305,6 +301,8 @@ static void render_status(void) {
     oled_write_P(led_usb_state.caps_lock ? PSTR("CAP ") : PSTR("    "), false);
     oled_write_P(led_usb_state.num_lock ? PSTR("NUM ") : PSTR("    "), false);
     oled_write_P(led_usb_state.scroll_lock ? PSTR("SCR ") : PSTR("    "), false);
+
+    is_num_lock_held = led_usb_state.num_lock;
 }
 
 void oled_task_user(void) {
