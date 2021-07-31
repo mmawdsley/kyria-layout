@@ -63,15 +63,14 @@ class Layout(object):
         self.y = None
         self.offset = None
 
-    def generate(self, with_base_layers, base_layer):
+    def generate(self, with_base_layers, base_layer, skip_layers):
         """Generate an image of the keyboard layout."""
 
         with open('keymap.json', 'r') as f:
             keyboard = json.loads(f.read())
 
         layers = keyboard['layers']
-        layer_count = len(layers)
-        skip_layers = []
+        layer_count = len(layers) - len(skip_layers)
 
         if with_base_layers:
             layer_count = layer_count - with_base_layers + 1
@@ -173,6 +172,7 @@ if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument('--with-base-layers', help='number of base layers', type=int)
     parser.add_argument('--base-layer', help='base layer ID', type=int)
+    parser.add_argument('--skip-layers', help='IDs of layers to skip', type=str)
 
     args = parser.parse_args()
 
@@ -181,4 +181,15 @@ if __name__ == "__main__":
         parser.print_help()
         sys.exit(1)
 
-    Layout().generate(args.with_base_layers, args.base_layer)
+    try:
+        skip_layers = args.skip_layers.split(",")
+    except AttributeError:
+        skip_layers = []
+
+    try:
+        skip_layers = [int(layer_idx) for layer_idx in skip_layers]
+    except ValueError:
+        print("Skip layers can only be numbers\n")
+        sys.exit(1)
+
+    Layout().generate(args.with_base_layers, args.base_layer, skip_layers)
