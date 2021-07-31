@@ -300,6 +300,7 @@ static void render_status(void) {
             oled_write_P(PSTR("Lower\n"), false);
             break;
         case _RAISE:
+        case _GAME_RAISE:
             oled_write_P(PSTR("Raise\n"), false);
             break;
         case _MAGIC:
