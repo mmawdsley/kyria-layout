@@ -27,7 +27,7 @@ enum layers {
 
 enum custom_keycodes {
     PLACEHOLDER = SAFE_RANGE,
-    KC_HCAP,
+    KC_HNUM,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -84,7 +84,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
     [_LOWER] = LAYOUT(
       KC_GRV,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                                        KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_DEL,
-      _______, _______, _______, KC_LBRC, KC_RBRC, KC_HCAP,                                     KC_PLUS, KC_LPRN, KC_RPRN, KC_EQL,  _______, _______,
+      _______, _______, _______, KC_LBRC, KC_RBRC, KC_HNUM,                                     KC_PLUS, KC_LPRN, KC_RPRN, KC_EQL,  _______, _______,
       _______, _______, KC_BTN2, KC_BTN3, KC_BTN1, _______, _______, _______, _______, _______, KC_UNDS, KC_MINS, _______, _______, _______, _______,
                                  XXXXXXX, _______, _______, _______, _______, _______, MO(_DEBUG), _______, _______, XXXXXXX
     ),
@@ -185,15 +185,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //     ),
 };
 
-bool is_caps_lock_lit = false;
+bool is_num_lock_lit = false;
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        case KC_HCAP:
-            if ((record->event.pressed && !is_caps_lock_lit)
-                || (!record->event.pressed && is_caps_lock_lit)
+        case KC_HNUM:
+            if ((record->event.pressed && !is_num_lock_lit)
+                || (!record->event.pressed && is_num_lock_lit)
             ) {
-                tap_code(KC_CAPS);
+                tap_code(KC_NUMLOCK);
             }
 
             break;
@@ -320,8 +320,9 @@ static void render_status(void) {
 
     oled_write_P(PSTR("Lock: "), false);
     oled_write_P(led_usb_state.caps_lock ? PSTR("CAP ") : PSTR("    "), false);
+    oled_write_P(led_usb_state.num_lock ? PSTR("NUM ") : PSTR("    "), false);
 
-    is_caps_lock_lit = led_usb_state.caps_lock;
+    is_num_lock_lit = led_usb_state.num_lock;
 }
 
 void oled_task_user(void) {
