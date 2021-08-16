@@ -35,7 +35,7 @@ KEYCODES = {
     'KC_INS': 'Insert',
     'KC_HOME': 'Home',
     'KC_END': 'End',
-    'KC_HNUM': 'Hold\nnumlock',
+    'KC_HCAP': 'Hold\ncaps',
     'KC_NLCK': 'Numlock',
     'KC_PAST': '*',
     'KC_PSLS': '/',
