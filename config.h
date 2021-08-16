@@ -16,7 +16,7 @@
 
 #pragma once
 
-#define MASTER_RIGHT
+#define MASTER_LEFT
 
 #define MOUSEKEY_INTERVAL 30
 #define MOUSEKEY_TIME_TO_MAX 40
