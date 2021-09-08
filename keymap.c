@@ -294,7 +294,14 @@ static void render_status(void) {
     oled_write_P(PSTR("Layer: "), false);
     switch (get_highest_layer(layer_state)) {
         case _QWERTY:
-            oled_write_P(PSTR("Default\n"), false);
+            // Default layer is always zero, even when changed
+            switch (biton32(default_layer_state)) {
+                case _GAME:
+                    oled_write_P(PSTR("Game\n"), false);
+                    break;
+                default:
+                    oled_write_P(PSTR("Default\n"), false);
+            }
             break;
         case _LOWER:
             oled_write_P(PSTR("Lower\n"), false);
