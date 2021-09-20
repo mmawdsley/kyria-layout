@@ -37,11 +37,10 @@ class Layout(object):
     MIN_OFFSET = OFFSETS[min(OFFSETS, key=OFFSETS.get)] * -1
     LAYER_TITLES = {
         0: 'Base',
-        1: 'Game',
-        2: 'Lower',
-        3: 'Raise',
-        4: 'Magic',
-        5: 'Debug'
+        1: 'Lower',
+        2: 'Raise',
+        3: 'Magic',
+        4: 'Debug'
     }
     KEYBOARD_WIDTH = KEY_WIDTH * NUM_COLS + (NUM_COLS - 1) * KEY_GUTTER
     KEYBOARD_HEIGHT = KEY_WIDTH * NUM_ROWS + (NUM_ROWS - 1) * KEY_GUTTER
