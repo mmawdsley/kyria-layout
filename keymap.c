@@ -18,6 +18,7 @@
 enum layers {
     _QWERTY = 0,
     _GAME,
+    _GAME_LOWER,
     _GAME_RAISE,
     _LOWER,
     _RAISE,
@@ -67,7 +68,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       KC_TAB,   KC_Q,  KC_W,   KC_E,    KC_R,   KC_T,                                              KC_Y,    KC_U,     KC_I,    KC_O,    KC_P,    KC_BSPC,
       KC_LCTRL, KC_A,  KC_S,   KC_D,    KC_F,   KC_G,                                              KC_H,    KC_J,     KC_K,    KC_L,    KC_SCLN, KC_QUOT,
       KC_LSFT,  KC_Z,  KC_X,   KC_C,    KC_V,   KC_B,    KC_ESC,     KC_LGUI, KC_RGUI, KC_BSLS,    KC_N,    KC_M,     KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
-                               XXXXXXX, KC_DEL, KC_LALT, MO(_LOWER), KC_SPC,  KC_ENT,  MO(_GAME_RAISE), KC_RALT, KC_RCTRL, XXXXXXX
+                               XXXXXXX, KC_DEL, KC_LALT, MO(_GAME_LOWER), KC_SPC, KC_ENT, MO(_GAME_RAISE), KC_RALT, KC_RCTRL, XXXXXXX
     ),
 /*
  * Lower Layer: Symbols
@@ -144,6 +145,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       XXXXXXX, XXXXXXX, KC_MS_L, KC_MS_D, KC_MS_R, KC_WH_U,                                     XXXXXXX, KC_VOLD,   KC_MUTE, KC_VOLU, XXXXXXX, XXXXXXX,
       KC_ACL2, XXXXXXX, KC_WH_L, XXXXXXX, KC_WH_R, KC_WH_D, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_MPRV,   KC_MPLY, KC_MNXT, XXXXXXX, KC_ACL0,
                                  XXXXXXX, _______, _______, _______, _______, _______, _______, _______, _______,   XXXXXXX
+    ),
+/*
+ * Base Layer: Game lower
+ *
+ * ,-------------------------------------------.                              ,-------------------------------------------.
+ * |        |      |      |      |      |      |                              |      |      |  Up  |      |      |        |
+ * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
+ * |        |      |      |      |      |      |                              |      | Left | Down | Right|      |        |
+ * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
+ * |        |      |      |      |      |      |      |      |  |      |      |      |      |      |      |      |        |
+ * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
+ *                        |      |      |      |      |      |  |      |      |      |      |      |
+ *                        `----------------------------------'  `----------------------------------'
+ */
+    [_GAME_LOWER] = LAYOUT(
+      _______, _______, _______, _______, _______, _______,                                     _______, _______, _______, _______, _______, _______,
+      KC_ESC,  _______, _______, _______, _______, _______,                                     _______, _______, _______, _______, _______, _______,
+      _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,  _______, _______,
+                                 XXXXXXX, _______, _______, _______, _______, _______, MO(_DEBUG), _______, _______, XXXXXXX
     ),
 /*
  * Base Layer: Game raise

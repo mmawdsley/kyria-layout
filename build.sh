@@ -9,5 +9,5 @@ fi
 
 qmk compile -kb kyria/rev1 -km mmawdsley
 qmk c2json -kb kyria/rev1 -km mmawdsley --no-cpp -o keymap.json keymap.c
-python3 layout_generator.py --with-base-layers=2 --base-layer=0 --skip-layers=6
+python3 layout_generator.py --with-base-layers=2 --base-layer=0 --skip-layers=6,7
 rm keymap.json
