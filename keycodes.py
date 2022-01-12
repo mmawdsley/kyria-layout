@@ -26,6 +26,7 @@ KEYCODES = {
     'LT(_RAISE, KC_DEL)': 'Raise\nDel',
     'DF(_QWERTY)': 'Qwerty\nlayout',
     'DF(_GAME)': 'Game\nlayout',
+    'DF(_PICO)': 'Pico-8\nlayout',
     'KC_PGUP': 'Page\nUp',
     'KC_PGDN': 'Page\nDown',
     'KC_UP': 'Up',
