@@ -23,7 +23,6 @@ KEYCODES = {
     'KC_TRNS': 'KC_TRNS',
     'KC_DLR': '$',
     'MT(MOD_LCTL, KC_ESC)' : 'Control\nEscape',
-    'MT(MOD_RCTL, KC_QUOT)' : 'Control\n"',
     'LT(_RAISE, KC_DEL)': 'Raise\nDel',
     'DF(_QWERTY)': 'Qwerty\nlayout',
     'DF(_GAME)': 'Game\nlayout',
