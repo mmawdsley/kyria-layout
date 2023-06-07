@@ -102,7 +102,7 @@ class Layout(object):
             text = Layout.LAYER_TITLES[layer_idx]
             layer = keyboard['layers'][layer_idx]
 
-            text_width, text_height = self.draw.textsize(text)
+            _, _, text_width, _ = self.draw.textbbox((0, 0), text)
             text_x = image_width / 2 - text_width / 2
 
             self.draw.text((text_x, self.y), text, fill=(0,0,0,128), font=self.font, align='center')
@@ -162,7 +162,7 @@ class Layout(object):
             except KeyError:
                 text = keycode
 
-            text_width, text_height = self.draw.textsize(text)
+            _, _, text_width, text_height = self.draw.textbbox((0, 0), text)
             text_x = x + Layout.KEY_WIDTH / 2 - text_width / 2
             text_y = y + Layout.KEY_WIDTH / 2 - text_height / 2
 
