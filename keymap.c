@@ -43,7 +43,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * | LShift |   Z  |   X  |   C  |   V  |   B  | Del  | LGUI |  | RGUI | | \  |   N  |   M  | ,  < | . >  | /  ? | RShift |
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
  *                        |      | LCTR | LALT | Lower| Enter|  | Space| Raise| RAlt | RCTR |      |
- *                         `----------------------------------'  `----------------------------------'
+ *                        `----------------------------------'  `----------------------------------'
  */
     [_QWERTY] = LAYOUT(
       KC_TAB,               KC_Q, KC_W, KC_E,    KC_R,     KC_T,                                              KC_Y,    KC_U,     KC_I,    KC_O,    KC_P,    KC_BSPC,
@@ -57,18 +57,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,-------------------------------------------.                              ,-------------------------------------------.
  * |  Tab   |   Q  |   W  |   E  |   R  |   T  |                              |   Y  |   U  |   I  |   O  |   P  |  Bspc  |
  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
- * |  Ctrl  |   A  |   S  |   D  |   F  |   G  |                              |   H  |   J  |   K  |   L  | ;  : |  ' "   |
+ * |Ctrl/Esc|   A  |   S  |   D  |   F  |   G  |                              |   H  |   J  |   K  |   L  | ;  : |  ' "   |
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
- * | LShift |   Z  |   X  |   C  |   V  |   B  | Esc  | LGUI |  | RGUI | | \  |   N  |   M  | ,  < | . >  | /  ? | RShift |
+ * | LShift |   Z  |   X  |   C  |   V  |   B  | Del  | LGUI |  | RGUI | | \  |   N  |   M  | ,  < | . >  | /  ? | RShift |
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
  *                        |      | Del  | LALT | Lower| Space|  | Enter| Raise| RAlt | RCTR |      |
  *                        `----------------------------------'  `----------------------------------'
  */
     [_GAME] = LAYOUT(
-      KC_TAB,   KC_Q,  KC_W,   KC_E,    KC_R,   KC_T,                                              KC_Y,    KC_U,     KC_I,    KC_O,    KC_P,    KC_BSPC,
-      KC_LCTL,  KC_A,  KC_S,   KC_D,    KC_F,   KC_G,                                              KC_H,    KC_J,     KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-      KC_LSFT,  KC_Z,  KC_X,   KC_C,    KC_V,   KC_B,    KC_ESC,     KC_LGUI, KC_RGUI, KC_BSLS,    KC_N,    KC_M,     KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
-                               XXXXXXX, KC_DEL, KC_LALT, MO(_GAME_LOWER), KC_SPC, KC_ENT, MO(_GAME_RAISE), KC_RALT, KC_RCTL,  XXXXXXX
+      KC_TAB,               KC_Q,  KC_W,   KC_E,    KC_R,   KC_T,                                                KC_Y,    KC_U,     KC_I,    KC_O,    KC_P,    KC_BSPC,
+      MT(MOD_LCTL, KC_ESC), KC_A,  KC_S,   KC_D,    KC_F,   KC_G,                                                KC_H,    KC_J,     KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+      KC_LSFT,              KC_Z,  KC_X,   KC_C,    KC_V,   KC_B,    KC_DEL,      KC_LGUI, KC_RGUI, KC_BSLS,     KC_N,    KC_M,     KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
+                                           KC_MUTE, KC_DEL, KC_LALT, MO(_GAME_LOWER), KC_SPC,  KC_ENT,  MO(_GAME_RAISE), KC_RALT, KC_RCTL,  XXXXXXX
     ),
 /*
  * Lower Layer: Symbols
@@ -221,7 +221,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return true;
 }
 
-#ifdef OLED_DRIVER_ENABLE
+#ifdef OLED_ENABLE
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
     return OLED_ROTATION_180;
 }
@@ -415,7 +415,7 @@ static void render_status(void) {
     is_caps_lock_lit = led_usb_state.caps_lock;
 }
 
-void oled_task_user(void) {
+bool oled_task_user(void) {
     if (is_keyboard_master()) {
         // Default layer is always zero, even when changed
         switch (biton32(default_layer_state)) {
@@ -429,6 +429,7 @@ void oled_task_user(void) {
     } else {
         render_kyria_logo();
     }
+    return false;
 }
 #endif
 

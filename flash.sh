@@ -3,4 +3,4 @@
 set -o nounset
 set -o errexit
 
-qmk flash -kb kyria/rev1 -km mmawdsley -bl dfu
+qmk flash -kb splitkb/kyria/rev1 -km mmawdsley -bl dfu

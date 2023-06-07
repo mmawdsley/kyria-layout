@@ -36,7 +36,7 @@
 #define MK_C_OFFSET_0 3
 #define MK_C_INTERVAL_0 8
 
-#ifdef OLED_DRIVER_ENABLE
+#ifdef OLED_ENABLE
   #define OLED_DISPLAY_128X64
 #endif
 
