@@ -6,6 +6,7 @@ from keycodes import KEYCODES
 from layout_map import ACTIONS, LAYOUT_MAP
 from argparse import ArgumentParser
 import json
+import os
 import sys
 
 class Layout(object):
@@ -47,16 +48,17 @@ class Layout(object):
     KEYBOARD_HEIGHT = KEY_WIDTH * NUM_ROWS + (NUM_ROWS - 1) * KEY_GUTTER
 
     def __init__(self):
+        self.dir = os.path.dirname(os.path.abspath(__file__))
         self.image_key_map = {
             'KC_TRNS': {
-                'filename': 'transparent.png'
+                'filename': os.path.join(self.dir, 'transparent.png')
             },
             'KC_NO': {
-                'filename': 'noop.png'
+                'filename': os.path.join(self.dir, 'noop.png')
             }
         }
         self.layout_image = None
-        self.key_image = Image.open('key.png')
+        self.key_image = Image.open(os.path.join(self.dir, 'key.png'))
         self.draw = None
         self.font = None
         self.x = None
@@ -120,7 +122,7 @@ class Layout(object):
             self.x = Layout.IMAGE_PADDING
             self.y += Layout.KEYBOARD_GUTTER + Layout.KEY_WIDTH + Layout.KEY_GUTTER
 
-        self.layout_image.save('layout.png')
+        self.layout_image.save(os.path.join(self.dir, 'layout.png'))
 
     def _process_actions(self, actions):
         """Modify the x, y, and offset variables based on the actions."""
